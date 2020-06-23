@@ -23,6 +23,6 @@ And you can then query things with something like:
 
 ```sh
 docker exec omsa omreport chassis bios
-``
+```
 
 etc.
