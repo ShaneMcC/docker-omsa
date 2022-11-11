@@ -1,6 +1,6 @@
 # Use CentOS 7 base image from Docker Hub
 # FROM centos:centos7.6
-FROM almalinux:8.6
+FROM almalinux:8.7
 MAINTAINER Shane Mc Cormack <dataforce@dataforce.org.uk>
 
 # Environment variables
