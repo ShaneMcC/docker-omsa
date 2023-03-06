@@ -32,8 +32,9 @@ if [ -e /usr/lib/systemd/system/autovt@.service ]; then
 	rm -Rfv /usr/lib/systemd/system/autovt@.service
 fi;
 
-echo 'Enable rc.local';
-systemctl enable rc-local.service
+# echo 'Enable rc.local';
+# systemctl enable rc-local.service
+# Removed due to https://bugzilla.redhat.com/show_bug.cgi?id=1516188
 
 echo "Starting init..."
 exec /sbin/init
