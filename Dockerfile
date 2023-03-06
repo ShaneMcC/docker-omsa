@@ -19,6 +19,12 @@ RUN wget -q -O -  https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash
 # Let's "install all", however we can select specific components instead
 RUN dnf -y install srvadmin-all && dnf clean all
 
+# Remove unneeded files
+RUN rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service
+
+# Make OMSA start..."
+COPY ./docker/rc.local /etc/rc.local
+
 # Prevent daemon helper scripts from making systemd calls
 ENV SYSTEMCTL_SKIP_REDIRECT=1
 
