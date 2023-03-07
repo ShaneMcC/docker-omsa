@@ -19,19 +19,19 @@ ENV PATH $PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
 #
 # Other requirements should be pulled in automatically by the bootstrap file
 #
-ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh
-ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh
+ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh-4c713e348603a5ce0231667b24a42907
+ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40
 RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     ln -s /usr/bin/microdnf /usr/bin/dnf && \
     ln -s /usr/bin/microdnf /usr/bin/yum && \
     dnf -y update && \
     dnf -y install passwd procps kmod tar which && \
-    cat /tmp/copygpgkeys.sh | bash && \
-    sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh && \
-    cat /tmp/bootstrap.sh | bash && \
-    dnf -y install srvadmin-all dell-system-update && \
+    cat /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40 | bash && \
+    sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-4c713e348603a5ce0231667b24a42907 && \
+    cat /tmp/bootstrap.sh-4c713e348603a5ce0231667b24a42907 | bash && \
+    dnf -y install srvadmin-all-11.0.0.0-5268.el9 dell-system-update-2.0.1.0-22.09.00 && \
     dnf clean all && \
-    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh /tmp/copygpgkeys.sh
+    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh-4c713e348603a5ce0231667b24a42907 /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40
 
 # Make OMSA start..."
 COPY ./docker/rc.local /etc/rc.local
