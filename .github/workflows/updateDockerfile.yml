@@ -23,7 +23,7 @@ jobs:
 
       - name: Build Docker Image
         if: steps.check-for-updates.outputs.changes_detected == 'true'
-        uses: mr-smithers-excellent/docker-build-push@v5
+        uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: shanemcc/docker-omsa
           tags: latest
