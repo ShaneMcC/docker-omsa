@@ -40,4 +40,5 @@ jobs:
 
   build-and-push:
     uses: ./.github/workflows/build-and-push.yml
+    needs: update
     if: needs.update.outputs.changes_detected == 'true'
