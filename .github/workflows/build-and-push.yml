@@ -27,7 +27,7 @@ jobs:
       - name: Build and Deploy to GHCR
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
-          image: shanemcc/docker-omsa
+          image: docker-omsa
           tags: latest
           dockerfile: Dockerfile
           registry: ghcr.io
