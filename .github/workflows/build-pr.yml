@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v3.3.0
 
       - name: Build
-        uses: mr-smithers-excellent/docker-build-push@v5
+        uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: shanemcc/docker-omsa
           tags: latest
