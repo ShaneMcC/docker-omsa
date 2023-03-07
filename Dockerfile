@@ -24,6 +24,7 @@ RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     dnf -y update && \
     dnf -y install passwd procps kmod tar which && \
     cat /tmp/copygpgkeys.sh | bash && \
+    sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh && \
     cat /tmp/bootstrap.sh | bash && \
     dnf -y install srvadmin-all dell-system-update && \
     dnf clean all && \
