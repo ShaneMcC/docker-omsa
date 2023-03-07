@@ -1,5 +1,8 @@
 FROM almalinux:9.1-minimal-20230222
 MAINTAINER Shane Mc Cormack <dataforce@dataforce.org.uk>
+LABEL org.opencontainers.image.authors "Shane Mc Cormack <dataforce@dataforce.org.uk>"
+LABEL org.opencontainers.image.description "Dell OpenManage Server Administrator in Docker."
+LABEL org.opencontainers.image.url "https://github.com/ShaneMcC/docker-omsa"
 
 # Environment variables
 ENV PATH $PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
