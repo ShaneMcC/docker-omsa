@@ -12,7 +12,7 @@ ENV PATH $PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
 # `kmod` is needed to allow `/etc/init.d/instsvcdrv` to run
 # `crb` repo is needed for `openwsman-client` which is needed by `srvadmin-tomcat`
 # `yum` symlink is required for `dsu` to install the catalog
-# `tar` and `which` is required for `dsu` to generate it's inventory
+# `tar` and `which` are required for `dsu` to generate it's inventory
 #
 # Other requirements should be pulled in automatically by the bootstrap file
 #

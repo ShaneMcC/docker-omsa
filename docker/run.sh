@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo "Started at $(date)"
+
 if [ "" = "${OMSA_USER}" -o "" = "${OMSA_PASS}" ]; then
 	echo 'Please specify OMSA_USER and OMSA_PASS env vars.'
 	exit 1;
@@ -17,6 +19,9 @@ echo "$OMSA_USER:$OMSA_PASS" | chpasswd
 
 echo "Allowing ${OMSA_USER} access to openmanage..."
 echo "${OMSA_USER}    *       Administrator" > /opt/dell/srvadmin/etc/omarolemap
+
+echo "Clearing old tmp files..."
+rm -Rf /tmp/* /var/tmp/*
 
 echo "Starting init..."
 exec /sbin/init
