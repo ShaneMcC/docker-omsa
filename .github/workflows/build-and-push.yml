@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Build and Push
+    concurrency: build-and-push
 
     steps:
       - name: Checkout

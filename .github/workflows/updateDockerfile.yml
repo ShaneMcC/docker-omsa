@@ -40,4 +40,4 @@ jobs:
 
   build-and-push:
     uses: ./.github/workflows/build-and-push.yml
-    if: jobs.update.outputs.changes_detected == 'true'
+    if: needs.update.outputs.changes_detected == 'true'
