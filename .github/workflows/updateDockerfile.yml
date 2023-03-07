@@ -15,7 +15,7 @@ jobs:
       changes_detected: ${{ steps.check-for-updates.outputs.changes_detected }}
     steps:
       - name: Checkout source
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3.3.0
 
       - name: Check for updates
         id: check-for-updates
