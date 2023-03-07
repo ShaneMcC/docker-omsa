@@ -10,20 +10,24 @@ ENV PATH $PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
 # `passwd` is needed by our startup script
 # `procps` is needed by some of the startup scripts
 # `kmod` is needed to allow `/etc/init.d/instsvcdrv` to run
-#
 # `crb` repo is needed for `openwsman-client` which is needed by `srvadmin-tomcat`
+# `yum` symlink is required for `dsu` to install the catalog
+# `tar` and `which` is required for `dsu` to generate it's inventory
 #
 # Other requirements should be pulled in automatically by the bootstrap file
 #
 ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh
+ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh
 RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     ln -s /usr/bin/microdnf /usr/bin/dnf && \
+    ln -s /usr/bin/microdnf /usr/bin/yum && \
     dnf -y update && \
-    dnf -y install passwd procps kmod && \
+    dnf -y install passwd procps kmod tar which && \
+    cat /tmp/copygpgkeys.sh | bash && \
     cat /tmp/bootstrap.sh | bash && \
-    dnf -y install srvadmin-all && \
+    dnf -y install srvadmin-all dell-system-update && \
     dnf clean all && \
-    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh
+    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh /tmp/copygpgkeys.sh
 
 # Make OMSA start..."
 COPY ./docker/rc.local /etc/rc.local
