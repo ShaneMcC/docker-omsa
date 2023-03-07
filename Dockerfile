@@ -1,6 +1,4 @@
-# Use CentOS 7 base image from Docker Hub
-# FROM centos:centos7.6
-FROM almalinux:8.7
+FROM almalinux:9.1-minimal-20230222
 MAINTAINER Shane Mc Cormack <dataforce@dataforce.org.uk>
 
 # Environment variables
@@ -13,9 +11,14 @@ ENV PATH $PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
 # `procps` is needed by some of the startup scripts
 # `kmod` is needed to allow `/etc/init.d/instsvcdrv` to run
 #
+# `crb` repo is needed for `openwsman-client` which is needed by `srvadmin-tomcat`
+#
 # Other requirements should be pulled in automatically by the bootstrap file
+#
 ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh
-RUN dnf -y update && \
+RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
+    ln -s /usr/bin/microdnf /usr/bin/dnf && \
+    dnf -y update && \
     dnf -y install passwd procps kmod && \
     cat /tmp/bootstrap.sh | bash && \
     dnf -y install srvadmin-all && \
