@@ -1,0 +1,45 @@
+name: Build and Push
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and Push
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+
+      - name: Build and Deploy to Docker Hub
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: shanemcc/docker-omsa
+          tags: latest
+          dockerfile: Dockerfile
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and Deploy to GHCR
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: shanemcc/docker-omsa
+          tags: latest
+          dockerfile: Dockerfile
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Deploy to registry
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: public/docker-omsa
+          tags: latest
+          dockerfile: Dockerfile
+          registry: registry.shanemcc.net
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
