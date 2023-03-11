@@ -1,0 +1,68 @@
+name: Release on tag
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Generate CHANGELOG
+        id: changelog
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ github.token }}
+          tag: ${{ github.ref_name }}
+          includeInvalidCommits: true
+          excludeTypes:
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.changes }}
+          token: ${{ github.token }}
+          makeLatest: true
+          prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-b') || contains(github.ref, '-a') }}
+          skipIfReleaseExists: true
+          allowUpdates: true
+          updateOnlyUnreleased: true
+          draft: false
+
+      - name: Build and Deploy to Docker Hub
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: shanemcc/docker-omsa
+          tags: ${{ github.ref_name }}
+          dockerfile: Dockerfile
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and Deploy to GHCR
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: docker-omsa
+          tags: ${{ github.ref_name }}
+          dockerfile: Dockerfile
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Deploy to registry
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: public/docker-omsa
+          tags: ${{ github.ref_name }}
+          dockerfile: Dockerfile
+          registry: registry.shanemcc.net
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
