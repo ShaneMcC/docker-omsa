@@ -18,7 +18,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: shanemcc/docker-omsa
-          tags: pr-{{ github.event.number }}
+          tags: pr-${{ github.event.number }}
           dockerfile: Dockerfile
           registry: docker.io
           pushImage: false
