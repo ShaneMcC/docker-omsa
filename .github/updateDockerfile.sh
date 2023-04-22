@@ -44,7 +44,7 @@ fi;
 
 # Update main image tag
 if [ "${LATEST_IMAGE}" != "" ]; then
-	sed -ir "s/FROM ${UPSTREAM}:[^ ]+/FROM ${UPSTREAM}:${LATEST_IMAGE}/" ${DOCKERFILE}
+	sed -ri "s/FROM ${UPSTREAM}:[^ ]+/FROM ${UPSTREAM}:${LATEST_IMAGE}/" ${DOCKERFILE}
 fi;
 
 # Update our ADD-ed files
