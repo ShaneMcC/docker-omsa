@@ -41,4 +41,5 @@ jobs:
   build-and-push:
     uses: ./.github/workflows/build-and-push.yml
     needs: update
+    secrets: inherit
     if: needs.update.outputs.changes_detected == 'true'
