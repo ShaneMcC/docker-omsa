@@ -43,3 +43,5 @@ jobs:
     needs: update
     secrets: inherit
     if: needs.update.outputs.changes_detected == 'true'
+    with:
+        commit_hash: ${{ steps.auto-commit-action.outputs.commit_hash }}
