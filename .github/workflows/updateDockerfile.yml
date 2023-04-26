@@ -13,6 +13,7 @@ jobs:
       contents: write
     outputs:
       changes_detected: ${{ steps.check-for-updates.outputs.changes_detected }}
+      commit_hash: ${{ steps.auto-commit-action.outputs.commit_hash }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v3.3.0
@@ -32,6 +33,7 @@ jobs:
           pushImage: false
 
       - name: Push changed file
+        id: auto-commit-action
         if: steps.check-for-updates.outputs.changes_detected == 'true'
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
@@ -44,4 +46,4 @@ jobs:
     secrets: inherit
     if: needs.update.outputs.changes_detected == 'true'
     with:
-        commit_hash: ${{ steps.auto-commit-action.outputs.commit_hash }}
+        commit_hash: ${{ needs.update.outputs.commit_hash }}
