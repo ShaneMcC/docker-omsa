@@ -16,7 +16,7 @@ jobs:
       commit_hash: ${{ steps.auto-commit-action.outputs.commit_hash }}
     steps:
       - name: Checkout source
-        uses: actions/checkout@v3.3.0
+        uses: actions/checkout@v4
 
       - name: Check for updates
         id: check-for-updates
