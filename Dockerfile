@@ -29,7 +29,7 @@ RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     cat /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40 | bash && \
     sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 && \
     cat /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 | bash && \
-    dnf -y install srvadmin-all-11.0.0.0-5268.el9 dell-system-update-2.0.2.0-23.03.00 && \
+    dnf -y install srvadmin-all-11.0.0.0-5268.el9 dell-system-update-2.0.2.3-23.11.00 && \
     dnf clean all && \
     rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40
 
