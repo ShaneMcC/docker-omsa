@@ -31,7 +31,8 @@ ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-
 RUN cat /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40 | bash
 
 RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 && \
-    cat /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 | bash
+    cat /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 | bash && \
+    update-crypto-policies --set DEFAULT:SHA1
 
 RUN dnf -y install srvadmin-all-11.0.0.0-5268.el9 dell-system-update-2.0.2.3-23.11.00 && \
     dnf clean all && \
