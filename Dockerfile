@@ -1,4 +1,4 @@
-FROM almalinux:9.4-minimal-20240723
+FROM almalinux:9.6-minimal-20250527
 MAINTAINER Shane Mc Cormack <dataforce@dataforce.org.uk>
 LABEL org.opencontainers.image.authors "Shane Mc Cormack <dataforce@dataforce.org.uk>"
 LABEL org.opencontainers.image.description "Dell OpenManage Server Administrator in Docker."
@@ -26,18 +26,18 @@ RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     dnf -y update && \
     dnf -y install passwd procps kmod tar which crypto-policies-scripts
 
-ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484
-ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40
+ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh-ca20a9d45d6f9df3413ce420c20d4f40
+ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
 
-RUN cat /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40 | bash
+RUN cat /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676 | bash
 
-RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 && \
-    cat /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 | bash && \
+RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-ca20a9d45d6f9df3413ce420c20d4f40 && \
+    cat /tmp/bootstrap.sh-ca20a9d45d6f9df3413ce420c20d4f40 | bash && \
     update-crypto-policies --set DEFAULT:SHA1
 
-RUN dnf -y install srvadmin-all-11.0.0.0-5268.el9 dell-system-update-2.0.2.3-23.11.00 && \
+RUN dnf -y install srvadmin-all-11.1.0.0-5773.el9 dell-system-update-2.1.1.0-24.12.00 && \
     dnf clean all && \
-    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40
+    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh-ca20a9d45d6f9df3413ce420c20d4f40 /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
 
 # Make OMSA start..."
 COPY ./docker/rc.local /etc/rc.local
