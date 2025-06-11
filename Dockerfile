@@ -19,17 +19,21 @@ ENV PATH $PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
 #
 # Other requirements should be pulled in automatically by the bootstrap file
 #
-ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484
-ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40
 RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     ln -s /usr/bin/microdnf /usr/bin/dnf && \
     ln -s /usr/bin/microdnf /usr/bin/yum && \
     dnf -y update && \
-    dnf -y install passwd procps kmod tar which && \
-    cat /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40 | bash && \
-    sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 && \
-    cat /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 | bash && \
-    dnf -y install srvadmin-all-11.0.0.0-5268.el9 dell-system-update-2.0.2.3-23.11.00 && \
+    dnf -y install passwd procps kmod tar which
+
+ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484
+ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40
+
+RUN cat /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40 | bash
+
+RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 && \
+    cat /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 | bash
+
+RUN dnf -y install srvadmin-all-11.0.0.0-5268.el9 dell-system-update-2.0.2.3-23.11.00 && \
     dnf clean all && \
     rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484 /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40
 
