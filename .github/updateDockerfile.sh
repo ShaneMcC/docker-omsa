@@ -80,7 +80,7 @@ while read LINE; do
 done < <(cat "${DOCKERFILE}" | grep "^ADD http")
 
 # Update `dnf install`` command
-sed -ir 's/dnf -y install srvadmin-all[^ ]* dell-system-update[^ ]*/dnf -y install '"${LATEST_SRVADMIN}"' '"${LATEST_DSU}"'/' ${DOCKERFILE}
+sed -ri 's/dnf -y install srvadmin-all[^ ]* dell-system-update[^ ]*/dnf -y install '"${LATEST_SRVADMIN}"' '"${LATEST_DSU}"'/' ${DOCKERFILE}
 
 # Has Changed?
 echo ""
