@@ -16,6 +16,7 @@ ENV PATH $PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
 # `crb` repo is needed for `openwsman-client` which is needed by `srvadmin-tomcat`
 # `yum` symlink is required for `dsu` to install the catalog
 # `tar` and `which` are required for `dsu` to generate it's inventory
+# `crypto-policies-scripts` is needed to allow SHA1 hashes
 #
 # Other requirements should be pulled in automatically by the bootstrap file
 #
@@ -23,7 +24,7 @@ RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     ln -s /usr/bin/microdnf /usr/bin/dnf && \
     ln -s /usr/bin/microdnf /usr/bin/yum && \
     dnf -y update && \
-    dnf -y install passwd procps kmod tar which
+    dnf -y install passwd procps kmod tar which crypto-policies-scripts
 
 ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh-e91e4f6d6a4b8b1b618bd5b8b6a4c484
 ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-7f7d16b78bc4f06e6bb8b6a217cbbd40
