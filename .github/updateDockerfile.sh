@@ -3,11 +3,26 @@
 # File we're updating
 DOCKERFILE="${GITHUB_WORKSPACE}/Dockerfile"
 
+if [ "" = "${GITHUB_WORKSPACE}" ]; then
+	SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+	DOCKERFILE="${SCRIPT_DIR}/../Dockerfile"
+fi;
+
+if [ "" = "${GITHUB_STEP_SUMMARY}" -o "" = "${GITHUB_OUTPUT}" ]; then
+	GITHUB_STEP_SUMMARY="/dev/null"
+	GITHUB_OUTPUT="/dev/stdout"
+fi;
+
+if [ ! -e "${DOCKERFILE}" ]; then
+	echo "Dockerfile not found: ${DOCKERFILE}"
+	exit 1
+fi;
+
 # Current Versions
 UPSTREAM="almalinux"
 CURRENT_IMAGE=$(cat "${DOCKERFILE}" | grep -Eo "^FROM ${UPSTREAM}:([^ ]+)" | awk -F: '{print $2}')
-CURRENT_SRVADMIN=$(cat Dockerfile | grep -Eo "srvadmin-all[^ ]*")
-CURRENT_DSU=$(cat Dockerfile | grep -Eo "dell-system-update[^ ]*")
+CURRENT_SRVADMIN=$(cat "${DOCKERFILE}" | grep -Eo "srvadmin-all[^ ]*")
+CURRENT_DSU=$(cat "${DOCKERFILE}" | grep -Eo "dell-system-update[^ ]*")
 
 if [ "" == "${CURRENT_IMAGE}" ]; then
 	echo "Primary image changed, please update .github/updateDockerfile.sh"
