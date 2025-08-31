@@ -31,6 +31,8 @@ jobs:
           dockerfile: Dockerfile
           registry: docker.io
           pushImage: false
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Push changed file
         id: auto-commit-action
