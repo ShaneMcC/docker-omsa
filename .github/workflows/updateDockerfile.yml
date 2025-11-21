@@ -16,7 +16,7 @@ jobs:
       commit_hash: ${{ steps.auto-commit-action.outputs.commit_hash }}
     steps:
       - name: Checkout source
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Check for updates
         id: check-for-updates
@@ -56,5 +56,5 @@ jobs:
   #  permissions:
   #    actions: write
   #  steps:
-  #    - uses: actions/checkout@v5
+  #    - uses: actions/checkout@v6
   #    - uses: gautamkrishnar/keepalive-workflow@v2
