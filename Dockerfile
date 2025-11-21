@@ -1,4 +1,4 @@
-FROM almalinux:9.6-minimal-20251117
+FROM almalinux:9.7-minimal-20251119
 MAINTAINER Shane Mc Cormack <dataforce@dataforce.org.uk>
 LABEL org.opencontainers.image.authors "Shane Mc Cormack <dataforce@dataforce.org.uk>"
 LABEL org.opencontainers.image.description "Dell OpenManage Server Administrator in Docker."
