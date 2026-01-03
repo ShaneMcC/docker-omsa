@@ -26,18 +26,18 @@ RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     dnf -y update && \
     dnf -y install passwd procps kmod tar which crypto-policies-scripts
 
-ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh-ca20a9d45d6f9df3413ce420c20d4f40
+ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh-e518f9de0b6e601095d8d914a19346d6
 ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
 
 RUN cat /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676 | bash
 
-RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-ca20a9d45d6f9df3413ce420c20d4f40 && \
-    cat /tmp/bootstrap.sh-ca20a9d45d6f9df3413ce420c20d4f40 | bash && \
+RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-e518f9de0b6e601095d8d914a19346d6 && \
+    cat /tmp/bootstrap.sh-e518f9de0b6e601095d8d914a19346d6 | bash && \
     update-crypto-policies --set DEFAULT:SHA1
 
 RUN dnf -y install srvadmin-all-11.1.0.0-5773.el9 dell-system-update-2.1.2.0-25.06.00 && \
     dnf clean all && \
-    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh-ca20a9d45d6f9df3413ce420c20d4f40 /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
+    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh-e518f9de0b6e601095d8d914a19346d6 /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
 
 # Make OMSA start..."
 COPY ./docker/rc.local /etc/rc.local
