@@ -5,3 +5,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 32 # Slightly over 1 month
