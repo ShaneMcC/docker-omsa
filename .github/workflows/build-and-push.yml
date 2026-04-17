@@ -28,7 +28,7 @@ jobs:
         if: inputs.commit_hash != ''
 
       - name: Build and Deploy to Docker Hub
-        uses: mr-smithers-excellent/docker-build-push@v6
+        uses: mr-smithers-excellent/docker-build-push@v6.8
         with:
           image: shanemcc/docker-omsa
           tags: dev-latest
@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build and Deploy to GHCR
-        uses: mr-smithers-excellent/docker-build-push@v6
+        uses: mr-smithers-excellent/docker-build-push@v6.8
         with:
           image: docker-omsa
           tags: dev-latest
@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Deploy to registry
-        uses: mr-smithers-excellent/docker-build-push@v6
+        uses: mr-smithers-excellent/docker-build-push@v6.8
         with:
           image: public/docker-omsa
           tags: dev-latest
