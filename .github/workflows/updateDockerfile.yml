@@ -24,7 +24,7 @@ jobs:
 
       - name: Build Docker Image
         if: steps.check-for-updates.outputs.changes_detected == 'true'
-        uses: mr-smithers-excellent/docker-build-push@v6.11
+        uses: mr-smithers-excellent/docker-build-push@v7.0
         with:
           image: shanemcc/docker-omsa
           tags: dev-latest
@@ -37,7 +37,7 @@ jobs:
       - name: Push changed file
         id: auto-commit-action
         if: steps.check-for-updates.outputs.changes_detected == 'true'
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses: stefanzweifel/git-auto-commit-action@v7.1.0
         with:
             commit_message: Update Dockerfile (${{ steps.check-for-updates.outputs.changed_items }})
             file_pattern: 'Dockerfile'
