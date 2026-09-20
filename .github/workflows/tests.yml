@@ -1,0 +1,28 @@
+# The entrypoint's test suite.
+#
+# Separate from build-pr.yml on purpose : that one answers "does the image
+# build", which takes minutes and needs a Docker daemon, and this one answers
+# "does run.sh still do what it is meant to", which takes a second and needs
+# neither. Keeping them apart means a logic error in the entrypoint is reported
+# as a logic error, in seconds, rather than as a red build somebody has to open
+# to understand.
+name: Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    name: Test the entrypoint
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.3
+
+      - name: Run the test suite
+        run: ./tests/run_tests.sh
