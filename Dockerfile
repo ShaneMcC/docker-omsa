@@ -1,11 +1,10 @@
 FROM almalinux:9.8-minimal-20260902
-MAINTAINER Shane Mc Cormack <dataforce@dataforce.org.uk>
-LABEL org.opencontainers.image.authors "Shane Mc Cormack <dataforce@dataforce.org.uk>"
-LABEL org.opencontainers.image.description "Dell OpenManage Server Administrator in Docker."
-LABEL org.opencontainers.image.url "https://github.com/ShaneMcC/docker-omsa"
+LABEL org.opencontainers.image.authors="Shane Mc Cormack <dataforce@dataforce.org.uk>"
+LABEL org.opencontainers.image.description="Dell OpenManage Server Administrator in Docker."
+LABEL org.opencontainers.image.url="https://github.com/ShaneMcC/docker-omsa"
 
 # Environment variables
-ENV PATH $PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
+ENV PATH=$PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
 
 # Do overall system update, install missing packages needed for OpenManage,
 # Add OMSA repo and install OMSA ("install all"), then clean up afterwards
@@ -48,4 +47,4 @@ ENV SYSTEMCTL_SKIP_REDIRECT=1
 COPY ./docker/run.sh /run.sh
 
 # Run the application
-CMD /run.sh
+CMD ["/run.sh"]
