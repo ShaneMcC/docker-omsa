@@ -4,7 +4,9 @@ Dell OpenManage Server Administrator in Docker.
 
 This was originally loosely based on https://hub.docker.com/r/jdelaros1/openmanage/ but updated for a newer version of OMSA and using the latest AlmaLinux release instead of CentOS, but has since diverged somewhat.
 
-This may seem a bit icky because it runs `systemd` within the container to get openmanage to start, but it does the job.
+Given that [OMSA is EOL Upstream](https://www.dell.com/support/kbdoc/en-us/000224826/omsa-eol-landing-page) as of Sept 30 2024 (with only security fixes until Sept 30 2027) - this repo is using AlmaLinux 9 which is the newest version that OMSA supports.
+
+Parts of this container may seem a bit icky because it runs `systemd` within the container to get openmanage to start, but it does the job. `omreport`, `dsu` and the open manage web ui all work.
 
 No SNMP support, maybe later.
 
@@ -16,8 +18,12 @@ This can be ran with something like:
 docker run --privileged -d -p 1311:1311 --restart=always \
     -e OMSA_USER="SomeUsername" -e OMSA_PASS="SomePassword" \
     -v /lib/modules/`uname -r`:/lib/modules/`uname -r` \
-    --cgroupns private --name=omsa shanemcc/docker-omsa
+    --cgroupns private --name=omsa shanemcc/docker-omsa:latest
 ```
+
+- Drop the `-p 1311:1311` if the web ui is not desired
+- Switch from `latest` to `dev-latest` if you want a more frequently updated container (this gets rebuilt periodically when upstream changes  (checked each night), compared to the less-frequent tagged-images which `latest` tracks.)
+- If you use `-e UNCERTIFIED_DRIVES="yes"` then non-dell drives will now show as "Status: OK" rather than "Status: Non-Critical" like they do by default
 
 And you can then query things with something like:
 
@@ -38,14 +44,14 @@ For updating, as long as the old container is running we can re-create the conta
 ```sh
 OMSA_USER=$(docker exec omsa sh -c 'echo ${OMSA_USER}') \
 OMSA_PASS=$(docker exec omsa sh -c 'echo ${OMSA_PASS}') \
-sh -c 'if [ "" != "${OMSA_USER}" -a "" != "${OMSA_PASS}" ]; then
-           docker pull shanemcc/docker-omsa && \
+sh -c 'if [ -n "${OMSA_USER}" ] && [ -n "${OMSA_PASS}" ]; then
+           docker pull shanemcc/docker-omsa:latest && \
            docker stop omsa && \
            docker rm omsa && \
            docker run --privileged -d -p 1311:1311 --restart=always \
                -e OMSA_USER="${OMSA_USER}" -e OMSA_PASS="${OMSA_PASS}" \
                -v /lib/modules/`uname -r`:/lib/modules/`uname -r` \
-               --cgroupns private --name=omsa shanemcc/docker-omsa
+               --cgroupns private --name=omsa shanemcc/docker-omsa:latest
         fi'
 ```
 This will re-create the container using the same settings previously used for the `OMSA_USER` and `OMSA_PASS` vars.
