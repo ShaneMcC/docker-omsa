@@ -19,6 +19,7 @@ ENV PATH=$PATH:/opt/dell/srvadmin/bin:/opt/dell/srvadmin/sbin
 #
 # Other requirements should be pulled in automatically by the bootstrap file
 #
+# Also clean up unneeded tomcat files
 RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     ln -s /usr/bin/microdnf /usr/bin/dnf && \
     ln -s /usr/bin/microdnf /usr/bin/yum && \
@@ -36,7 +37,8 @@ RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/
 
 RUN dnf -y install srvadmin-all-11.1.0.0-5773.el9 dell-system-update-2.3.0.1-26.08.00 && \
     dnf clean all && \
-    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh-34deca28fef2f6597e6a2d4ffbdb4f6e /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
+    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh-34deca28fef2f6597e6a2d4ffbdb4f6e /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676 && \
+    rm -Rfv /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/webapps/manager /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/webapps/host-manager /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/webapps/ROOT/*
 
 # Make OMSA start..."
 COPY ./docker/rc.local /etc/rc.local
