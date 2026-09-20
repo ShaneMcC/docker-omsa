@@ -24,6 +24,7 @@ docker run --privileged -d -p 1311:1311 --restart=always \
 - Drop the `-p 1311:1311` if the web ui is not desired
 - Switch from `latest` to `dev-latest` if you want a more frequently updated container (this gets rebuilt periodically when upstream changes  (checked each night), compared to the less-frequent tagged-images which `latest` tracks.)
 - If you use `-e UNCERTIFIED_DRIVES="yes"` then non-dell drives will now show as "Status: OK" rather than "Status: Non-Critical" like they do by default
+- `OMSA_USER_FILE` or `OMSA_PASS_FILE` can also be used in place of the non-`_FILE` variants (not both) if you do not want these as an env var (eg you want to use docker secrets.) Only the first line per file is used.
 
 And you can then query things with something like:
 
@@ -39,7 +40,7 @@ etc.
 docker exec -it omsa dsu --inventory
 ```
 
-For updating, as long as the old container is running we can re-create the container using something like this:
+For updating, as long as the old container is running we can re-create the container using something like this (adapt this if you changed the example run command):
 
 ```sh
 OMSA_USER=$(docker exec omsa sh -c 'echo ${OMSA_USER}') \
@@ -58,6 +59,6 @@ This will re-create the container using the same settings previously used for th
 
 # Comments, Questions, Bugs, Feature Requests etc.
 
-Bugs and Feature Requests should be raised on the [issue tracker on github](https://github.com/ShaneMcC/docker-omsa/issues), and I'm happy to recieve code pull requests via github, however I may not always accept every pull request if it does not meet my vision for the project.
+Bugs and Feature Requests should be raised on the [issue tracker on github](https://github.com/ShaneMcC/docker-omsa/issues), and I'm happy to receive code pull requests via github, however I may not always accept every pull request if it does not meet my vision for the project.
 
 I can be found idling on various different IRC Networks, but the best way to get in touch would be to message "Dataforce" on Quakenet (or chat in #Dataforce), or drop me a mail (email address is in my github profile)
