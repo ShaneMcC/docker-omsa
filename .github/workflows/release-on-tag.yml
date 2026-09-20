@@ -6,6 +6,10 @@ on:
     tags:
       - "v*.*.*"
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -37,32 +41,9 @@ jobs:
           updateOnlyUnreleased: true
           draft: false
 
-      - name: Build and Deploy to Docker Hub
-        uses: mr-smithers-excellent/docker-build-push@v7.0
-        with:
-          image: shanemcc/docker-omsa
-          tags: ${{ github.ref_name }},latest
-          dockerfile: Dockerfile
-          registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Build and Deploy to GHCR
-        uses: mr-smithers-excellent/docker-build-push@v7.0
-        with:
-          image: docker-omsa
-          tags: ${{ github.ref_name }},latest
-          dockerfile: Dockerfile
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Deploy to registry
-        uses: mr-smithers-excellent/docker-build-push@v7.0
-        with:
-          image: public/docker-omsa
-          tags: ${{ github.ref_name }},latest
-          dockerfile: Dockerfile
-          registry: registry.shanemcc.net
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+  build-and-push:
+    needs: release
+    uses: ./.github/workflows/build-and-push.yml
+    with:
+      tags: ${{ github.ref_name }} latest
+    secrets: inherit

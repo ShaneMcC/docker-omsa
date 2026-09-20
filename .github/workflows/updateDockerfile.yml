@@ -5,12 +5,14 @@ on:
 
 name: Check image updates
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   update:
     name: Check image updates
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     outputs:
       changes_detected: ${{ steps.check-for-updates.outputs.changes_detected }}
       commit_hash: ${{ steps.auto-commit-action.outputs.commit_hash }}
@@ -20,19 +22,21 @@ jobs:
 
       - name: Check for updates
         id: check-for-updates
-        run:  "${GITHUB_WORKSPACE}/.github/updateDockerfile.sh"
+        run: '"${GITHUB_WORKSPACE}/.github/updateDockerfile.sh"'
+
+      - name: Set up Docker Buildx
+        if: steps.check-for-updates.outputs.changes_detected == 'true'
+        uses: docker/setup-buildx-action@v4.4.1
 
       - name: Build Docker Image
         if: steps.check-for-updates.outputs.changes_detected == 'true'
-        uses: mr-smithers-excellent/docker-build-push@v7.0
+        uses: docker/build-push-action@v7.4.0
         with:
-          image: shanemcc/docker-omsa
-          tags: dev-latest
-          dockerfile: Dockerfile
-          registry: docker.io
-          pushImage: false
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          push: false
+          context: .
+          cache-from: type=gha,scope=docker-omsa
+          cache-to: type=gha,mode=max,scope=docker-omsa
+          provenance: false
 
       - name: Push changed file
         id: auto-commit-action
@@ -48,7 +52,8 @@ jobs:
     secrets: inherit
     if: needs.update.outputs.changes_detected == 'true'
     with:
-        commit_hash: ${{ needs.update.outputs.commit_hash }}
+      tags: dev-latest
+      ref: ${{ needs.update.outputs.commit_hash }}
 
   #keepalive-job:
   #  name: Keepalive Workflow

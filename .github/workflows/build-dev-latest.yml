@@ -1,17 +1,17 @@
-name: Build PR
+name: Build dev-latest
 
 on:
   workflow_dispatch:
-  pull_request:
+  push:
     branches: [master]
 
 permissions:
   contents: read
+  packages: write
 
 jobs:
-  build:
+  build-and-push:
     uses: ./.github/workflows/build-and-push.yml
     with:
-      tags: pr-${{ github.event.number }}
-      push: false
+      tags: dev-latest
     secrets: inherit
