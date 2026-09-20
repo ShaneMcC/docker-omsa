@@ -23,15 +23,15 @@ RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     ln -s /usr/bin/microdnf /usr/bin/dnf && \
     ln -s /usr/bin/microdnf /usr/bin/yum && \
     dnf -y update && \
-    dnf -y install passwd procps kmod tar which crypto-policies-scripts
+    dnf -y install passwd procps kmod tar which crypto-policies-scripts && \
+    dnf clean all
+
+ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
+RUN bash /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
 
 ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh-34deca28fef2f6597e6a2d4ffbdb4f6e
-ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
-
-RUN cat /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676 | bash
-
 RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-34deca28fef2f6597e6a2d4ffbdb4f6e && \
-    cat /tmp/bootstrap.sh-34deca28fef2f6597e6a2d4ffbdb4f6e | bash && \
+    bash /tmp/bootstrap.sh-34deca28fef2f6597e6a2d4ffbdb4f6e && \
     update-crypto-policies --set DEFAULT:SHA1
 
 RUN dnf -y install srvadmin-all-11.1.0.0-5773.el9 dell-system-update-2.3.0.1-26.08.00 && \
