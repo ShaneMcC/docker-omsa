@@ -22,6 +22,11 @@ elif [ -n "${OMSA_USER_FILE}" ]; then
 	fi
 fi
 
+if [ "$(printf '%s' "${OMSA_USER}" | cut -c 1)" = '-' ]; then
+	echo 'OMSA_USER can not start with a "-".'
+	HAS_ERROR=1
+fi
+
 if [ -z "${OMSA_PASS}" ] && [ -z "${OMSA_PASS_FILE}" ]; then
 	echo 'Please specify OMSA_PASS or OMSA_PASS_FILE env vars.'
 	HAS_ERROR=1
@@ -44,14 +49,21 @@ fi
 if [ "${HAS_ERROR}" = "1" ]; then
 	exit 1
 fi;
+
 # Set login credentials
 if ! getent passwd "${OMSA_USER}" >/dev/null; then
 	echo "Creating user ${OMSA_USER}..."
-	adduser "${OMSA_USER}"
+	if ! adduser "${OMSA_USER}"; then
+		echo "Failed to create user account, exiting."
+		exit 1
+	fi;
 fi
 
 echo "Setting login password for ${OMSA_USER}..."
-echo "$OMSA_USER:$OMSA_PASS" | chpasswd
+if ! echo "$OMSA_USER:$OMSA_PASS" | chpasswd; then
+	echo "Failed to set account password, exiting."
+	exit 1
+fi;
 
 echo "Allowing ${OMSA_USER} access to openmanage..."
 echo "${OMSA_USER}    *       Administrator" > /opt/dell/srvadmin/etc/omarolemap
