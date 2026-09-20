@@ -62,23 +62,20 @@ fi;
 # Update main image tag
 sed -ri "s/FROM ${UPSTREAM}:[^ ]+/FROM ${UPSTREAM}:${LATEST_IMAGE}/" "${DOCKERFILE}"
 
-# Update our ADD-ed files
-while read -r _ URL FILE _; do
-	if ! HASH=$(curl -L -s -f "${URL}" | md5sum | awk '{print $1}'); then
+# Update the pinned checksums on our ADD-ed files.
+# Lines look like: ADD --checksum=sha256:<hex> <url> <dest>
+while read -r _ CHECKSUM URL _; do
+	CURRENT_HASH=${CHECKSUM#--checksum=sha256:}
+	if ! LATEST_HASH=$(curl -L -s -f "${URL}" | sha256sum | awk '{print $1}'); then
 		echo "Unable to fetch ${URL}"
 		exit 1
 	fi;
-	NEWFILE=${FILE%%-*}-${HASH}
 
-	ESCAPED_FILE=$(printf '%s\n' "$FILE" | sed -e 's/[\/&]/\\&/g')
-	ESCAPED_NEWFILE=$(printf '%s\n' "$NEWFILE" | sed -e 's/[\/&]/\\&/g')
-
-	sed -i "s/${ESCAPED_FILE}/${ESCAPED_NEWFILE}/g" "${DOCKERFILE}"
-
-	if [ "${FILE}" != "${NEWFILE}" ]; then
-		CHANGED_THING+=("\`${FILE}\` => \`${NEWFILE}\`")
+	if [ "${CURRENT_HASH}" != "${LATEST_HASH}" ]; then
+		sed -i "s#^ADD --checksum=sha256:${CURRENT_HASH} ${URL}#ADD --checksum=sha256:${LATEST_HASH} ${URL}#" "${DOCKERFILE}"
+		CHANGED_THING+=("\`${URL##*/}\` \`sha256:${CURRENT_HASH:0:12}\` => \`sha256:${LATEST_HASH:0:12}\`")
 	fi;
-done < <(grep "^ADD http" "${DOCKERFILE}")
+done < <(grep "^ADD --checksum=sha256:" "${DOCKERFILE}")
 
 # Update `dnf install`` command
 sed -ri 's/dnf -y install srvadmin-all[^ ]* dell-system-update[^ ]*/dnf -y install '"${LATEST_SRVADMIN}"' '"${LATEST_DSU}"'/' "${DOCKERFILE}"

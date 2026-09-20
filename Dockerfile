@@ -27,17 +27,17 @@ RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/almalinux-crb.repo && \
     dnf -y install passwd procps kmod tar which crypto-policies-scripts && \
     dnf clean all
 
-ADD https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
-RUN bash /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676
+ADD --checksum=sha256:4b78b378694dc78e96db40eccef8bf77f03dde534408a79bdeb0ee37c47abab7 https://linux.dell.com/repo/hardware/dsu/copygpgkeys.sh /tmp/copygpgkeys.sh
+RUN bash /tmp/copygpgkeys.sh
 
-ADD https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh-34deca28fef2f6597e6a2d4ffbdb4f6e
-RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh-34deca28fef2f6597e6a2d4ffbdb4f6e && \
-    bash /tmp/bootstrap.sh-34deca28fef2f6597e6a2d4ffbdb4f6e && \
+ADD --checksum=sha256:39a9aa68a98be304072cdbff2e506808c2d2ec0dad0082e2ffde7f9e67a06d1c https://linux.dell.com/repo/hardware/dsu/bootstrap.cgi /tmp/bootstrap.sh
+RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/bootstrap.sh && \
+    bash /tmp/bootstrap.sh && \
     update-crypto-policies --set DEFAULT:SHA1
 
 RUN dnf -y install srvadmin-all-11.1.0.0-5773.el9 dell-system-update-2.3.0.1-26.08.00 && \
     dnf clean all && \
-    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh-34deca28fef2f6597e6a2d4ffbdb4f6e /tmp/copygpgkeys.sh-7c5921e5431a47fe3f8fac2cce900676 && \
+    rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh /tmp/copygpgkeys.sh && \
     rm -Rfv /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/webapps/manager /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/webapps/host-manager /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/webapps/ROOT/*
 
 # Make OMSA start..."
