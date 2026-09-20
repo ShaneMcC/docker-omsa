@@ -7,7 +7,29 @@ updates:
   open-pull-requests-limit: 10
   cooldown:
     default-days: 32 # Slightly over 1 month
+  # Two groups rather than one, and the split is by update type rather than by
+  # package, because of how the auto-merge decides.
+  #
+  # dependabot/fetch-metadata reports ONE update-type for a grouped pull
+  # request : the highest semver change anywhere in it. automergeMinorOrPatch
+  # acts only on 'version-update:semver-minor' and 'version-update:semver-patch'.
+  # So with every action in a single group, one major bump makes the whole group
+  # major, and the routine updates travelling beside it stop merging as well --
+  # they are not rejected, nothing says anything, the pull request simply sits
+  # there until somebody notices.
+  #
+  # Splitting on update-type keeps the noise reduction the grouping was added
+  # for -- the routine updates still arrive as one pull request -- while leaving
+  # majors, which want a human anyway, in a pull request of their own.
   groups:
-    github-actions-all:
+    github-actions-minor-and-patch:
       patterns:
       - '*'
+      update-types:
+      - minor
+      - patch
+    github-actions-major:
+      patterns:
+      - '*'
+      update-types:
+      - major
