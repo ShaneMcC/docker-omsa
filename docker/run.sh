@@ -2,8 +2,43 @@
 
 echo "Started at $(date)"
 
+# Either credential may be given as a file instead of as an env var, which keeps
+# it out of the container's environment -- where "docker inspect" and
+# /proc/<pid>/environ can both read it, and where anything that dumps the
+# environment on a crash takes it along. "/run/secrets/<name>" is where compose
+# and swarm put a secret, so OMSA_PASS_FILE=/run/secrets/omsa_password needs no
+# plumbing beyond naming the secret.
+#
+# The first line is used, without its newline, which is what a file written by
+# "echo" or by "docker secret create" from a here-string looks like. A password
+# containing a newline therefore cannot be passed this way; the env var still
+# takes anything.
+read_credential_file() {
+	if [ ! -r "$1" ]; then
+		echo "Cannot read $1" >&2
+		return 1
+	fi
+	head -n 1 -- "$1"
+}
+
+if [ -n "${OMSA_USER_FILE}" ]; then
+	if [ -n "${OMSA_USER}" ]; then
+		echo 'Specify either OMSA_USER or OMSA_USER_FILE, not both.' >&2
+		exit 1
+	fi
+	OMSA_USER=$(read_credential_file "${OMSA_USER_FILE}") || exit 1
+fi
+
+if [ -n "${OMSA_PASS_FILE}" ]; then
+	if [ -n "${OMSA_PASS}" ]; then
+		echo 'Specify either OMSA_PASS or OMSA_PASS_FILE, not both.' >&2
+		exit 1
+	fi
+	OMSA_PASS=$(read_credential_file "${OMSA_PASS_FILE}") || exit 1
+fi
+
 if [ -z "${OMSA_USER}" ] || [ -z "${OMSA_PASS}" ]; then
-	echo 'Please specify OMSA_USER and OMSA_PASS env vars.'
+	echo 'Please specify OMSA_USER and OMSA_PASS env vars (or OMSA_USER_FILE and OMSA_PASS_FILE).'
 	exit 1
 fi
 
