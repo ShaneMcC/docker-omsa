@@ -1,0 +1,23 @@
+name: Shellcheck
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: Lint the entrypoint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      # Preinstalled on the runner image, so no install step.
+      - name: Run shellcheck
+        run: shellcheck -x docker/run.sh

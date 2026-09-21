@@ -1,0 +1,8 @@
+failure-threshold: warning
+ignored:
+  # This image intentionally does not pin OS package versions : the base
+  # image and its repos are what track what "supported" means here, and a
+  # frozen NEVRA for `passwd`/`procps`/`kmod`/`tar`/`which`/
+  # `crypto-policies-scripts` would need bumping by hand for a reason that
+  # has nothing to do with this Dockerfile.
+  - DL3041
