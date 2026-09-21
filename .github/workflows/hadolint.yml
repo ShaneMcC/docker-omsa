@@ -1,0 +1,34 @@
+name: Hadolint
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  hadolint:
+    name: Lint the Dockerfile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      # Pinned to v3.5.0 : hadolint/hadolint-action has no floating "v3" tag.
+      #
+      # The action always exports HADOLINT_FAILURE_THRESHOLD at its own "info"
+      # default, whatever the input given — but hadolint 2.15.1's own precedence
+      # is CLI > config file > environment, so .hadolint.yaml's "warning" still
+      # wins. Confirmed against this action's pinned hadolint binary rather than
+      # assumed. Do not "fix" this by adding a failure-threshold input here : it
+      # would duplicate a value .hadolint.yaml already sets, and hide it from a
+      # local `hadolint Dockerfile` run.
+      - name: Run hadolint
+        uses: hadolint/hadolint-action@v3.5.0
+        with:
+          dockerfile: Dockerfile
+          config: .hadolint.yaml
