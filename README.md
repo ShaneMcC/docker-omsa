@@ -2,13 +2,15 @@
 
 Dell OpenManage Server Administrator in Docker.
 
-This was originally loosely based on https://hub.docker.com/r/jdelaros1/openmanage/ but updated for a newer version of OMSA and using the latest AlmaLinux release instead of CentOS, but has since diverged somewhat.
+This was originally loosely based on https://hub.docker.com/r/jdelaros1/openmanage/ but updated for a newer version of OMSA and using a newer AlmaLinux release instead of CentOS, but has since diverged somewhat.
 
 Given that [OMSA is EOL Upstream](https://www.dell.com/support/kbdoc/en-us/000224826/omsa-eol-landing-page) as of Sept 30 2024 (with only security fixes until Sept 30 2027) - this repo is using AlmaLinux 9 which is the newest version that OMSA supports.
 
 Parts of this container may seem a bit icky because it runs `systemd` within the container to get openmanage to start, but it does the job. `omreport`, `dsu` and the open manage web ui all work.
 
 No SNMP support, maybe later.
+
+This should work with any hardware OMSA supports. (16th Gen and below. I use it on 11th and 12th gen perfectly fine even though they are not officially "supported")
 
 ## Running
 
@@ -21,10 +23,11 @@ docker run --privileged -d -p 1311:1311 --restart=always \
     --cgroupns private --name=omsa shanemcc/docker-omsa:latest
 ```
 
-- Drop the `-p 1311:1311` if the web ui is not desired
-- Switch from `latest` to `dev-latest` if you want a more frequently updated container (this gets rebuilt periodically when upstream changes  (checked each night), compared to the less-frequent tagged-images which `latest` tracks.)
+- Drop the `-p 1311:1311` if the web ui is not desired. This is https, with a self-signed cert. It's possible to update the cert using `docker exec omsa omconfig preferences webserver` but this container does none of it's own cert handling. If the cert is a problem, a proxy sat in front of it can also help.
+- Switch from `latest` to `dev-latest` if you want a more frequently updated container (this gets rebuilt periodically when upstream changes (checked each night), compared to the less-frequent tagged-images which `latest` tracks.)
 - If you use `-e UNCERTIFIED_DRIVES="yes"` then non-dell drives will now show as "Status: OK" rather than "Status: Non-Critical" like they do by default
 - `OMSA_USER_FILE` or `OMSA_PASS_FILE` can also be used in place of the non-`_FILE` variants (not both) if you do not want these as an env var (eg you want to use docker secrets.) Only the first line per file is used.
+- From testing, `--privileged` and `--cgroupns private` is required due to combination of systemd and omsa. I'm willing to accept this, so I've not spent too much effort trying to narrow this down (feel free to raise an issue or continue [Issue #33](https://github.com/ShaneMcC/docker-omsa/issues/33) if you have any ideas)
 
 And you can then query things with something like:
 
