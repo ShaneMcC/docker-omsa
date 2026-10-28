@@ -1,4 +1,4 @@
-FROM almalinux:9.8-minimal-20261002
+FROM almalinux:9.8-minimal-20261027
 LABEL org.opencontainers.image.authors="Shane Mc Cormack <dataforce@dataforce.org.uk>"
 LABEL org.opencontainers.image.description="Dell OpenManage Server Administrator in Docker."
 LABEL org.opencontainers.image.url="https://github.com/ShaneMcC/docker-omsa"
