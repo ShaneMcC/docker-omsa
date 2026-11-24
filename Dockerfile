@@ -35,7 +35,7 @@ RUN sed -i 's/IMPORT_GPG_CONFIRMATION="na"/IMPORT_GPG_CONFIRMATION="yes"/' /tmp/
     bash /tmp/bootstrap.sh && \
     update-crypto-policies --set DEFAULT:SHA1
 
-RUN dnf -y install srvadmin-all-11.1.0.0-5773.el9 dell-system-update-2.3.0.1-26.08.00 && \
+RUN dnf -y install srvadmin-all-11.1.0.0-5773.el9 dell-system-update-2.3.0.2-26.11.00 && \
     dnf clean all && \
     rm -Rfv /usr/lib/systemd/system/autovt@.service /usr/lib/systemd/system/getty@.service /tmp/bootstrap.sh /tmp/copygpgkeys.sh && \
     rm -Rfv /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/webapps/manager /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/webapps/host-manager /opt/dell/srvadmin/lib64/openmanage/apache-tomcat/webapps/ROOT/*
